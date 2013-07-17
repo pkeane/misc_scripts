@@ -4,7 +4,7 @@ echo For files in $PWD
 echo replacing $1 with $2
 echo
 cd $PWD
-for file in `ls *$2*`
+for file in `ls *`
 do 
 sed "s!$1!$2!g" ${file}>${file}.new
 mv ${file}.new ${file}
