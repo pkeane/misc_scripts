@@ -1,0 +1,23 @@
+#!/bin/bash
+
+unrar e *.rar
+
+for file in *.ape
+do 
+    ffmpeg -i "$file" -acodec flac "${file}.flac"
+done
+
+cuebreakpoints *.cue | shnsplit -o flac *.flac
+
+cuetag.sh *.cue split-*
+
+for file in *.flac
+do 
+    ffmpeg -i "$file" -acodec alac "${file%.flv}.m4a"
+done
+
+rm *.ape
+rm *.ape.flac.m4a
+rm *.flac
+rm *.rar
+

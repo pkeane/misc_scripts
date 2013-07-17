@@ -1,0 +1,34 @@
+#!/usr/local/bin/php
+<?php
+
+$db_name = "xREGDB";
+$db_url = "db.lib.utexas.edu";
+$u = "regdbuser";
+$p = "regdbuser";
+
+$connection = @mysql_connect("$db_url","$u","$p") or die ("Couldn't main connect.");
+$db = @mysql_select_db($db_name, $connection) or die("Couldn't select database."
+);
+for ($x=0; $x<30; $x++){
+	$sql = "
+ 	SELECT collection_id, work_id 
+        FROM `work_to_collection`
+ 	";
+ 	$this_result = @mysql_query($sql,$connection) or die("Couldn't execute query.");
+	while ($row = mysql_fetch_array($this_result)) {
+	$work_id = $row['work_id'];
+	$collection_id = $row['collection_id'];
+	$sql2 = "
+ 	UPDATE
+        `work`
+        SET 
+        collection_id = '$collection_id' 
+ 	WHERE work_id =	$work_id
+ 	";
+ 	$result = @mysql_query($sql2,$connection) or die("Couldn't execute query on work $work_id.");
+
+}	}
+
+exit;
+?>	
+

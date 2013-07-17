@@ -1,0 +1,22 @@
+#!/bin/sh
+
+exec `echo -n "firefox -P
+firefox -safe-mode
+acroread
+emacs
+gimp
+grip
+mocp
+mplayer
+mrxvt
+opera
+pidgin
+rxvt
+seamonkey
+sunbird
+terminal
+vlc
+xchat
+xfontsel
+" | dmenu`
+

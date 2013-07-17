@@ -1,0 +1,459 @@
+#!/bin/sh
+# ----------------------------------------------------------
+# Script name: mvb ("MV-Batch" -- in reference to the
+#    *BSD/Linux command mv, which the script uses)
+# Written by: Steve Doonan, Portales, NM US
+# Email: xscd@xscd.com
+# For the latest version, check:
+#    http://www.xscd.com/pub/ 
+# or email the author at the address above. Criticisms,
+# comments and suggestions are all welcome.
+#
+# This shell script was written to "batch rename" files
+# (change the name of many files at once) in the
+# current working directory.
+#
+# Change the path on the first line to point to the location
+# on your computer of either the Bourne shell (sh) or
+# the BASH (Bourne Again) shell (bash). At your shell's
+# command prompt, type:
+# which sh
+# or
+# which bash
+# to see where sh or bash is installed on your machine.
+# Be sure to retain the #! on the first line--just put
+# the correct path immediately after it, like:
+# #!/usr/local/bin/bash
+# Copy this script to a directory in your $PATH variable:
+# Type:
+# echo $PATH
+# to see the locations where executable programs reside
+# on your computer.
+# Then change to that directory and make this script
+# executable by typing:
+# chmod a+x mvb
+#
+# To use the script, change to the directory whose files
+# you would like to rename, then type the command mvb
+# followed by a space and the new name you would like
+# the files in that directory to have, then type RETURN
+# or ENTER
+# 
+# FILE PERMISSIONS: If you would like for this script to
+# change the permissions for each file in addition to
+# renaming them, UNcomment the line (remove the
+# initial #) near the end that reads:
+# #         chmod 664 "$I"
+# and change the permissions indicated in that command
+# to those appropriate for use on your own computer
+# --> refer to the man page:
+# man 1 chmod
+# ----------------------------------------------------------
+
+# ==========================================================
+#                          variables
+# ==========================================================
+
+MVB_VERSION="1.5.8"
+MISSING_OR_BAD_EXTENSION="ask"
+
+# ==========================================================
+#                          functions
+# ==========================================================
+
+
+mvb_error ()
+{
+cat << _EOF_
+
+---------------------------------------------------------
+    mvb ERROR:
+    $1
+---------------------------------------------------------
+
+_EOF_
+exit 1
+}
+
+# ==========================================================
+
+get_auto_extension ()
+{
+cat << _EOF_
+
+---------------------------------------------------------
+-a option was specified for mvb
+AUTO-RENAME missing or improbable filename extensions
+
+    What would you like those filename extensions to be
+    renamed to? (type a filename extension, with or without
+    a preceding dot (period), then press RETURN or ENTER)
+_EOF_
+echo
+echo -n "    Filename extension (or CONTROL-C to quit): "
+read AUTO_EXTENSION
+
+if [ $AUTO_EXTENSION ]
+    then
+        AUTO_EXTENSION="$( echo "$AUTO_EXTENSION" | sed 's/^\.*\(.\{0,4\}\).*$/\1/' \
+        | tr -d '\n' | tr -c '[:alnum:]' '_' | tr [:upper:] [:lower:] )"
+    else
+        REGET_AUTO_EXTENSION="defined"
+fi
+cat << _EOF_
+---------------------------------------------------------
+_EOF_
+if [ $REGET_AUTO_EXTENSION ]
+    then
+    REGET_AUTO_EXTENSION=""
+    get_auto_extension
+fi
+}
+
+# ==========================================================
+
+make_zero_padded_index_number ()
+{
+INDEX=$(( $INDEX + 1 ))
+INDEX_COUNT="$( echo "$INDEX" | tr -d '\n' | wc -c )"
+PADDING_ZEROS="$(ls "$PWD" | wc -l | tr '[:digit:]' '0' | tr -d '[:space:]' )"
+INDEX_ALPHANUMERIC="$( echo "${PADDING_ZEROS}${INDEX}" | cut -c$(($INDEX_COUNT + 1))- )"
+}
+
+# ==========================================================
+
+print_help ()
+
+{
+
+more << _EOF_
+---------------------------------------------------------------------
+
+mvb HELP - information and instructions
+
+This shell script (Bourne or BASH) will RENAME all visible files
+(files that don't begin with a dot) in the current directory, to
+a name you specify, appending a numerical index to each filename
+so that each is unique, and retaining the original filename
+extension, if one exists. This script will NOT rename
+subdirectories or symbolic links contained within the current
+directory, nor will it descend into subdirectories to rename
+files within them.
+
+ABOUT THE NEW FILENAME: The name you choose may include spaces
+(which will be converted to underscores by this script), but in
+general the new name should BEGIN with at least one alphabetic
+character and contain only letters, numbers, dots (periods) and
+underscores, as is usually recommended for any *BSD/Linux
+filename.
+
+If the script does not see what looks like a valid FILENAME
+EXTENSION (3-4 characters following a dot at the end of a
+filename) on the current name for each file, it will ask for
+one, UNLESS you specify the option -a (Auto-rename bad filename
+extensions) or -i (Ignore bad filename extensions) on the
+command line when invoking mvb (please see the information for
+the -a and -i options below.
+
+If you WANT to add a filename extension, just type  3 or 4
+characters (i.e. jpg, txt, html), with or without a  preceding
+dot--the script will provide the dot if you do not. If you do
+NOT want the filename to have an extension, just  press RETURN
+or ENTER at that prompt without typing any  characters, and no
+filename extension will be added.
+
+COMMAND LINE OPTIONS
+
+-a   Auto-rename missing or improbable filename extensions. mvb
+     normally retains a file's filename extension (such as .jpg)
+     when it renames a file. However, if mvb encounters a file
+     with an "improbable" extension (less that 3 characters or
+     more than 4), it will normally pause and ask the user
+     whether he or she wishes to supply a new extension, or
+     remove the old one. The -a option causes mvb to use a
+     single extension that the user specifies once when the
+     script begins execution, and to use that extension for only
+     those files that mvb considers to have an improbable
+     extension. For other files that DO have a probable
+     extension (such as .jpg, .gif, .txt) mvb retains the file's
+     original extension as it renames each file.
+
+-i   Ignore bad or missing filename extensions when renaming
+     files. For every file that is renamed, mvb will retain the
+     original filename extension (if any exists). It will not
+     examine the extensions to determine if they are missing or
+     "improbable." All files will be renamed, but filename
+     extensions will be unaltered.
+
+Command line options -- discussion
+
+     The -a and -i options are mutually exclusive. Only one
+     should be used at a time. They are useful for unattended
+     script execution. Without them, mvb will pause every time
+     it finds a file with a missing or improbable filename
+     extension and ask whether the user wants to specify a new
+     extension, or remove the improbable one.
+
+     The -i option is useful when the files that will be renamed
+     have filename extensions that are considered "improbable"
+     by mvb, but which the user knows are correct or wishes to
+     retain. mvb's only criterion to determine whether a
+     filename extension is probable or improbable is to examine
+     whether it has either 3 or 4 characters. If it has no
+     characters, or if there are less than three or greater than
+     4 characters, mvb considers the filename extension
+     improbable. For example, mvb would consider the extensions
+     .bk, .gz, and .backup improbable or wrong and would
+     normally ask for a new filename extension. The -i option
+     causes mvb to ignore and retain such filename extensions as
+     it renames all files.
+
+Command line options -- examples
+
+   mvb -a new_filename
+   
+      mvb will ask once, when the script begings, for an
+      extension to use for every file it encounters that has a
+      missing or improbable filename extension. All other files
+      will retain their original filename extension as they are
+      renamed.
+
+   mvb -i new_filename
+   
+      mvb will ignore filename extensions (will not check to
+      determine whether they are "probable" or not). All files
+      will be renamed, but their original filename extensions
+      (if any) will be retained in their new file names.
+
+FILE PERMISSIONS: If you would like for this script to change
+the permissions for each file in addition to renaming them,
+UNcomment the line (remove the initial #) near the end of the
+script that reads:
+
+#         chmod 664 "\$I"
+
+and change the permissions to those appropriate for your own use
+--> refer to the man page:
+
+man 1 chmod
+
+---------------------------------------------------------------------
+_EOF_
+
+if [ $1 = "exit" ]
+    then
+    exit 0
+    else
+cat << _EOF_
+To QUIT this program at any time, press CONTROL-C
+To CONTINUE, press RETURN or ENTER
+_EOF_
+read REPLY
+fi
+
+}
+
+# ==========================================================
+
+no_newname ()
+{
+cat << _EOF_
+
+---------------------------------------------------------
+    You did not specify a NEW_NAME for the files.
+
+    After the name of the command (and options, if
+    any) please enter a SPACE followed by the name
+    you would like all the files in the current
+    directory to be renamed to.
+
+    For information and instructions, press the h
+    key and then the RETURN or ENTER key. To QUIT,
+    simply press RETURN or ENTER or CONTROL-C
+---------------------------------------------------------
+_EOF_
+read REPLY
+if [ $REPLY ]
+    then
+        print_help "exit"
+    else
+        exit 1
+fi
+}
+
+# ==========================================================
+#                      end of functions
+# ==========================================================
+
+while getopts ":aih" option
+do
+    case "$option" in
+        a ) if [ $MISSING_OR_BAD_EXTENSION = "ignore" ]
+                then
+                mvb_error "Please select EITHER the -a or -i option, not both."
+                else
+                MISSING_OR_BAD_EXTENSION="auto"
+            fi
+            ;;
+        i ) if [ $MISSING_OR_BAD_EXTENSION = "auto" ]
+                then
+                mvb_error "Please select EITHER the -a or -i option, not both."
+                else
+                MISSING_OR_BAD_EXTENSION="ignore"
+            fi
+            ;;
+        h ) print_help "exit" ;;
+        \?) mvb_error "NON-EXISTENT COMMAND-LINE OPTION specified" ;;
+    esac
+done
+
+if [ $OPTIND -gt $# ]
+    then
+    no_newname
+fi
+
+shift $(expr $OPTIND - 1)
+
+if [ $MISSING_OR_BAD_EXTENSION = "auto" ]
+    then
+    get_auto_extension
+fi
+
+TOTAL_FILE_COUNT="$(find . -maxdepth 1 -type f | wc -l)"
+
+if [ $TOTAL_FILE_COUNT = "0" ]
+    then
+    mvb_error "NO FILES FOUND in current directory.  Exiting..."
+    exit 1
+fi
+
+
+NEWNAME="$( echo "$*" | tr -c '[:alnum:]' '_' )"
+
+cat << _EOF_
+
+=========================================================
+mvb (version ${MVB_VERSION})
+RENAME FILES TO--> $NEWNAME
+_EOF_
+
+if [ $MISSING_OR_BAD_EXTENSION = "ignore" ]
+    then
+    echo "IMPROBABLE FILENAME EXTENSIONS--> ignore"
+elif [ $MISSING_OR_BAD_EXTENSION = "auto" ]
+    then
+    echo "IMPROBABLE FILENAME EXTENSIONS: auto-rename to-->" ".${AUTO_EXTENSION}"
+fi
+
+cat << _EOF_
+CURRENT DIRECTORY--> $PWD
+
+   Continue? (Press RETURN or ENTER)
+   TO QUIT, type q (then press RETURN or ENTER)
+   FOR INFORMATION about mvb, including command-
+   line options, type h (then press RETURN or ENTER)
+=========================================================
+_EOF_
+
+read CONTINUE
+
+case $CONTINUE in
+    [!h]* ) exit ;;
+       h  ) print_help "no_exit" ;;
+esac
+
+INDEX=0
+
+echo "Renaming files..."
+echo
+
+for I in *
+   do
+      #-----------------------------------------
+      # if file is NOT a directory or a link...
+      #-----------------------------------------
+      if [ -f "$I" -a ! -L "$I" ]
+         then
+         #-----------------------------------------------
+         # if filename has a 3 or 4 character extension...
+         #-----------------------------------------------
+         if echo "$I" | grep "\.[^.0-9]\{3,4\}$" > /dev/null
+            then
+            #------------------------------------------------
+            # assign filename extension to variable EXTENSION
+            #------------------------------------------------
+            EXTENSION="$( echo "$I" | sed 's/^.*\(\.[^.]*\)$/\1/' | tr [:upper:] [:lower:] )"
+         #-----------------------------------------------------
+         # otherwise, for extension: ASK, AUTO-RENAME or IGNORE
+         #-----------------------------------------------------
+         else
+             if [ $MISSING_OR_BAD_EXTENSION = "ignore" ]
+                 then
+                    if echo "$I" | grep "\." > /dev/null
+                        then
+                            EXTENSION="$( echo "$I" | sed 's/^[^.]*\(\..*\)$/\1/' )"
+                        else
+                            EXTENSION=''
+                    fi
+                 echo "  BAD EXTENSION?" $I "<-- IGNORING"
+             elif [ $MISSING_OR_BAD_EXTENSION = "auto" ]
+                 then
+                 EXTENSION=".${AUTO_EXTENSION}"
+                 echo "  BAD EXTENSION?" $I "<-- USING" $EXTENSION
+             else
+                 echo
+                 echo '---------------------------------------------------------'
+                 echo "CURRENT FILE IS-->" $I
+                 echo "No (or improbable) filename extension found. Enter new"
+                 echo "filename extension or press RETURN or ENTER for none."
+                 echo -n "NEW FILENAME EXTENSION: "
+                 read NEW_EXTENSION
+                 echo '---------------------------------------------------------'
+                 echo
+                 #-----------------------------------------------------------------
+                 # cut the new extension (if any) down to no more than 4 characters
+                 #-----------------------------------------------------------------
+                 NEW_EXTENSION="$( echo "$NEW_EXTENSION" | sed 's/^\.*\(.\{0,4\}\).*$/\1/' \
+                 | tr -d '\n' | tr -c '[:alnum:]' '_' | tr [:upper:] [:lower:] )"
+                 if [ -n "$NEW_EXTENSION" ]
+                 then
+                 EXTENSION=".${NEW_EXTENSION}"
+                 else
+                 EXTENSION=''
+                 fi
+             fi
+         fi
+         #----------------------------------------------------------------------
+         # at this point, EXTENSION should be set correctly--an alphanumeric
+         # index number is created (by the function make_zero-padded_index_number)
+         # and the file is renamed (with a slightly different name if the computed
+         # filename already exists in the current directory).
+         #----------------------------------------------------------------------
+         make_zero_padded_index_number
+         RENAME_TO="${NEWNAME}${INDEX_ALPHANUMERIC}${EXTENSION}"
+         if [ -e "$RENAME_TO" ]
+            then
+               RENAME_TO="${NEWNAME}${INDEX_ALPHANUMERIC}a${EXTENSION}"
+         fi
+         PRINT_PROGRESS="$(expr $INDEX % 20)"
+         if [ $PRINT_PROGRESS -eq "0" ]
+            then
+               PERCENT_DONE="$(echo "scale=2; $INDEX / $TOTAL_FILE_COUNT * 100" | bc -q)"
+               echo $PERCENT_DONE "% complete -- renaming" $TOTAL_FILE_COUNT "files"
+         fi
+
+#         chmod 664 "$I"
+
+         mv -i -- "$I" "$RENAME_TO"
+
+
+      fi
+   done
+echo "100.00 % complete --" $TOTAL_FILE_COUNT "files renamed"
+cat << _EOF_
+
+---------------------------------------------------------
+  The files have been renamed. Script exiting...
+---------------------------------------------------------
+
+_EOF_

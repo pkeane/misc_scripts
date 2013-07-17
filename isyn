@@ -1,0 +1,4 @@
+#!/bin/sh
+
+rsync -avh /Users/pkeane/Music/iTunes/iTunes\ Media/* /Volumes/pktunes/Music/itunes_media
+

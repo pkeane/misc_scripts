@@ -1,0 +1,6 @@
+#!/bin/sh
+
+filename="`date +'%Y%m%d'`.txt"
+
+vim $HOME/projects/notes/$filename
+

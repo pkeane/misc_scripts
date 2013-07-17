@@ -1,0 +1,12 @@
+#/bin/bash
+
+DATEDIR=$(date +%Y%m%d)
+
+echo $DATEDIR
+
+cd $PWD
+
+mkdir $DATEDIR
+
+echo "created directory $DATEDIR"
+

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+#find . -name '*.flac' | while read -r file
+#do
+#    #newfile=$(echo "$file" | sed 's/flac/m4a/g')
+#    newfile=${file}.m4a
+#    echo $newfile
+#    ffmpeg -i $file -acodec alac $newfile
+#done
+#
+
+for file in *.ape
+do 
+    ffmpeg -i "$file" -acodec flac "${file}.flac"
+done

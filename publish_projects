@@ -1,0 +1,7 @@
+#!/bin/bash
+
+otl.php > /var/www/littlehat.com/projects.php
+cp /home/pkeane/Outlines/projects.otl /home/pkeane/.projects.otl
+
+lines=`wc /home/pkeane/Outlines/projects.otl | cut -f 2 -d ' '`
+echo "published projects listing to the web! ($lines lines)"

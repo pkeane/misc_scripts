@@ -1,0 +1,7 @@
+#!/bin/ksh
+cd /home/pkeane/htdocs/vr/
+for php_file in `ls *.php`
+do 
+sed '/include(\"functions.php/'d ${php_file}>${php_file}.new
+mv ${php_file}.new ${php_file}
+done

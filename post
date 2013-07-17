@@ -1,0 +1,7 @@
+#!/bin/sh
+
+key=$1
+value=$2
+
+curl -d "$1=$2" http://www.postbin.org/vap2nc
+

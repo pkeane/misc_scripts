@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+export JAVA_HOME='/usr/local/java'
+export CATALINA_HOME='/usr/local/tomcat'
+export CVS_ROOT='/var/lib/cvs'
+export ANT_HOME='/usr/local/ant'
+PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$PATH
+emacs ~/cvs/
+

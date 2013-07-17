@@ -1,0 +1,19 @@
+#!/bin/bash
+echo -n "Choose Background Color for Terminal(b-black,g-grey,y-yellow): "
+read color
+case "$color" in
+b)
+setterm -background black -foreground white -store
+;;
+g)
+setterm -background white -foreground black -store
+;;
+y)
+setterm -background yellow -foreground red -store
+;;
+*)
+echo "I do not understand"
+;;
+esac
+
+

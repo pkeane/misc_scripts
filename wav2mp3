@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd $PWD
+
+ls *.wav | xargs -i basename \{\} .wav | xargs -i lame \{\}.wav \{\}.mp3

@@ -1,0 +1,3 @@
+#!/usr/local/bin/bash
+
+locate $1 | grep perl | grep -v ports

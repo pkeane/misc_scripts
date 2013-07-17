@@ -1,0 +1,20 @@
+#/bin/bash
+find . | while read -r file
+do
+    newfile=$(echo "$file" | sed '
+        #replace " - " with a single underscore.
+        s/\s-\s/_/g 
+        #replace spaces with underscores
+        s/\s/_/g
+        #replace "-" dashes with underscores.
+        s/-/_/g
+        #remove exclamation points
+        s/!//g
+        #remove plus signs 
+        s/+/_/g
+        #remove commas
+        s/,//g')
+    mv "$file" "$newfile"
+done
+
+

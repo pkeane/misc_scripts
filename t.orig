@@ -1,0 +1,8 @@
+#!/bin/sh
+
+todo=`echo $@ | tr -s ' ' '_'`
+
+#filename="NOTE--`date +'%Y%m%d'`--$todo"
+filename="NOTE--$todo"
+
+touch $HOME/$filename

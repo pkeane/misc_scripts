@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ps auxww | grep 'X ' | awk '{print $2}' | xargs kill

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+sleep 5
+feh --bg-center /home/pkeane/Backgrounds/kempff.jpg
+sleep 5
+feh --bg-center /home/pkeane/Backgrounds/amadeus.jpg
+sleep 5
+feh --bg-center /home/pkeane/Backgrounds/foxchasers.jpg
+sleep 5
+feh --bg-center /home/pkeane/Backgrounds/blake.jpg
+

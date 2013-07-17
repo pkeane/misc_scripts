@@ -1,0 +1,5 @@
+#!/bin/bash
+
+tail $1 > tempfile
+cat tempfile > $1
+

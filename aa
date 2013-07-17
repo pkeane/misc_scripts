@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd $HOME/projects
+git pull origin master
+vim outline.otl
+

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# print a hierarchy tree starting at
+# specified directory (. default)
+(cd ${1-.}; pwd)
+find ${1-.} -type d -print | sort -f |
+sed -e "s,^${1-.},," -e "/^$/d" -e \
+		"s,[^/]*/\([^/]*\)$,\`-----\1," -e "s,[^/]*/,|      ,g"
+

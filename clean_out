@@ -1,0 +1,7 @@
+#!/bin/bash
+
+rm *.ape
+rm *.ape.flac.m4a
+rm *.flac
+rm *.rar
+

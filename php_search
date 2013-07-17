@@ -1,0 +1,13 @@
+#!/usr/bin/php
+
+<?php
+      $x500 = ldap_connect('ldap.utexas.edu');
+       $bind = ldap_bind($x500);
+   $ldap_result = ldap_search($x500,"O=THE UNIVERSITY OF TEXAS AT AUSTIN,C=US", "sn=keane");
+//       $ldap_result = ldap_search($x500,"O=THE UNIVERSITY OF TEXAS AT AUSTIN,C=US", "uid=2539472");
+     $entry_array = ldap_get_entries($x500, $ldap_result);
+     $result ="{$entry_array[0][telephonenumber][0]}";
+     ldap_close($x500);
+
+print_r($result);
+     ?>

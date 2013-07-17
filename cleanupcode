@@ -1,0 +1,7 @@
+#!/bin/bash
+cd $PWD
+find . -name '\#*' | xargs rm
+find . -name '*.~*' | xargs rm
+find . -name 'semantic.*' | xargs rm
+find . -type d -name '.rsrc' | xargs rm -r
+find . -type d -name '.AppleDouble' | xargs rm -r

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+lookup.plx $1 | less
+

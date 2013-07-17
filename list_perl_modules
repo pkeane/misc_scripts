@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use File::Find; 
+use File::Spec::Functions;
+
+find ({ wanted => sub { print (canonpath "$_\n") if /\.pm\z/ }, no_chdir => 1 }, @INC);
+

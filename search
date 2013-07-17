@@ -1,0 +1,4 @@
+#!/bin/bash
+
+clear
+ldapsearch  -LLL -x -P 2  -h ldap.utexas.edu:389  -b "OU=FACULTY-STAFF,O=THE UNIVERSITY OF TEXAS AT AUSTIN,C=US" "(sn=$1*)"  cn  mail telephonenumber uid dn | grep -v '^#' | grep -v '^ ' | grep -v '^ '

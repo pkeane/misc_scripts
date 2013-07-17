@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/usr/bin/rxvt -e w3m littlehat.com/page 
+

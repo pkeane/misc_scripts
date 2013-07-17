@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#function weather {
+zipcode=$1 
+if [ -n "$zipcode" ]; then
+	zipcode=78723
+fi
+if [ -n "$zipcode" ]; then
+	lynx -dump "http://weather.yahooapis.com/forecastrss?p=$zipcode" | 
+	grep -i condition | 
+	awk -F' ' '{print $4 $5 $6}' | 
+	awk -F'< ' '{print $1}' | 
+	sed 's/,/ /'
+else
+	echo 'USAGE: weather <zipcode>'
+fi
+#}
+

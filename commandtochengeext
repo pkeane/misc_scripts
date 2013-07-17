@@ -1,0 +1,1 @@
+ls *.html | xargs -i basename \{\} .html | xargs -i mv \{\}.html \{\}.php

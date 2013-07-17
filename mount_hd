@@ -1,0 +1,5 @@
+#!/bin/bash
+
+mount /dev/sdc1 /mnt/hd -o uid=1000,gid=100
+
+

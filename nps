@@ -1,0 +1,20 @@
+#!/bin/sh
+
+PIDS=`ls -1 /proc | grep -i ^[0-9] | sort -n`
+for pid in $PIDS
+do
+	if [ -d /proc/$pid ] 
+	then
+		cmdline="`cat -v /proc/$pid/cmdline | tr '^@' ' ' 2>/dev/null`"
+		if [ ! -z "$cmdline" ]
+		then
+			cmdstr=$cmdline
+		else
+			pname="`cat /proc/$pid/status | grep -i Name: | cut -d: -f2 | cut -d' ' -f2 | tr -d '[:space:]'`"
+			cmdstr="[$pname]"
+		fi
+
+		state="`cat /proc/$pid/status | grep -i State: | cut -d: -f2 | cut -d' ' -f2`"
+		printf "%6d %-12s %s\n" "$pid" "$state" "$cmdstr"
+	fi
+done

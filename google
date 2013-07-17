@@ -1,0 +1,4 @@
+#!/bin/bash
+
+google.plx $1 | less
+

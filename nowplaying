@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# ~/bin/nowplaying
+
+is_playing_music=`mpc | head -2 | tail -1 | grep playing`
+if [[ -n "$is_playing_music" ]]; then
+  mpc --format "%artist%/%title%" | head -1
+else
+  hostname
+fi

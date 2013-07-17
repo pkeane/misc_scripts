@@ -1,0 +1,6 @@
+#!/bin/bash
+echo
+echo printing $1
+echo
+#a2ps --medium=Letter -P DefaultPrinter $1
+a2ps --medium=Letter  $1

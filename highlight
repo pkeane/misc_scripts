@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+
+#use like this: %cat myfile | highlight word_i_want_highlighted
+
+my $word = shift;
+while (<>) {
+    s/\Q$word\E/\e[31m$word\e[0m/g;
+        print;
+	}
+

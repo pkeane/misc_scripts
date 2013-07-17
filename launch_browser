@@ -1,0 +1,3 @@
+#!/bin/sh
+DISPLAY=:0 /home/pkeane/firefox2/firefox -new-tab "$1"
+

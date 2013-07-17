@@ -1,0 +1,7 @@
+#!/bin/sh
+
+#remap caps lock as control key!
+xmodmap -e 'remove Lock = Caps_Lock'
+xmodmap -e 'keysym Caps_Lock = Control_L'
+xmodmap -e 'add Control = Control_L'
+

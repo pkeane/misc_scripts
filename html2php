@@ -1,0 +1,8 @@
+#!/bin/sh
+cd $PWD
+for file in `ls *.html`
+do
+sed 's/\.htmlll/.html/g' ${file} > ${file}.new
+mv ${file}.new ${file}
+
+done 
